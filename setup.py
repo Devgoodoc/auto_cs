@@ -1,7 +1,6 @@
-import cx_Freeze
 from cx_Freeze import setup, Executable
 import os
-import sys
+#import sys
 
 os.environ['TCL_LIBRARY'] = r'C:\Users\Goodoc\AppData\Local\Programs\Python\Python36-32\tcl\tcl8.6'
 os.environ['TK_LIBRARY'] = r'C:\Users\Goodoc\AppData\Local\Programs\Python\Python36-32\tcl\tk8.6'
@@ -24,4 +23,3 @@ setup(
     options = {"build_exe": build_exe_options},
     executables = [Executable("auto_cs_1.py", base = "Win32GUI")]
 )
-

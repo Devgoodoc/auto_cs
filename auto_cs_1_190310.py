@@ -3,9 +3,7 @@ from tkinter import *
 from tkinter import ttk, scrolledtext
 from tkinter import messagebox as msg
 import datetime
-
 from slackclient import SlackClient
-
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 #=====================================
@@ -66,11 +64,11 @@ now = str(datetime.datetime.now())
 today = str(datetime.date.today())
 day_of_week = str(datetime.date.today().strftime("%A"))     # 영문 요일
 
-day_of_week_2 = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일']
-
 total_date = today + " " + day_of_week
 
-token = 'xoxp-3917885633-113133424242-566008421730-f54b93ee06b701825d46e40c276364c8'
+#token = 'xoxp-3917885633-113133424242-566008421730-f54b93ee06b701825d46e40c276364c8'       # 만료된 토큰 1
+token = 'xoxp-3917885633-113133424242-573146862631-30b1b9e7d9531b32f20e582409895f09'
+
 sc = SlackClient(token)
 
 # hero_states = [hero_state_0, hero_state_1, hero_state_2, hero_state_3, hero_state_4, hero_state_5, hero_state_6]
@@ -133,12 +131,14 @@ def _enrollment():
 	elif cs_state.get() == 2:
 		process_status = '보류'
 
+	day_of_week_2 = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일']
+
 	# 날짜 변환
 	if day_of_week == 'Sunday':
 		day_of_korean = day_of_week_2[0]
 	elif day_of_week == 'Monday':
 		day_of_korean = day_of_week_2[1]
-	elif day_of_week == 'Thuesday':
+	elif day_of_week == 'Tuesday':
 		day_of_korean = day_of_week_2[2]
 	elif day_of_week == 'Wednesday':
 		day_of_korean = day_of_week_2[3]
@@ -149,25 +149,26 @@ def _enrollment():
 	elif day_of_week == 'Saturday':
 		day_of_korean = day_of_week_2[6]
 
+
 	cs_data_list = [receipt_date_box.get(), day_of_korean, hospital_name_box.get(), ask_contents.get('1.0', END).strip(),
 	                goodocmon_choose.get(),
 	                ocschart_name_box.get(), ask_type_1_choose.get(), ask_type_2_choose.get(), process_status]
 
-	ws.append_row(cs_data_list)  # 리스트 형태의 데이터를 행 단위로 넣어줌. 데이터를 체크해서 자동으로 비어있는 다음행에 넣어줌
+	ws.append_row(cs_data_list)  # 리스트 형태의 데이터를 행 단위로 데이터를 체크해서 자동으로 비어있는 다음행에 넣어줌
 
 
 	# 슬랙 알림 기능
-
 	for n in range(len(hero_list)):
-		value_1.append(hero_states[n].get())    # 체크박스의 상태값을 배열에 추가한다.
+		value_1.append(hero_states[n].get())    # 처리 담당자 체크박스의 상태값을 첫번째 배열에 추가한다.
 
 		if value_1[n] == 1:
-			codes_1.append(hero_codes[n])       # 체크된 이름의 hero_code를 배열에 추가한다.
+			codes_1.append(hero_codes[n])       # 체크된 이름의 hero_code를 두번째 배열에 추가한다.
 												#print("선택한 담당자로 멘션 보내야함")
 		else:
 												# print("보내지 않음")
 			pass
 
+	# CS 채널 선택 값 가져오기
 	final_channel = channel_state.get()
 
 	if final_channel == 0:
@@ -187,13 +188,18 @@ def _enrollment():
 
 	sc.api_call('chat.postMessage', link_names=True, channel=channel_name, text=message, as_user=False, username='지옥에서 온 CS')
 
-	msg.showinfo('결과', 'CS 등록이 완료되었습니다.')		
+	msg.showinfo('결과', 'CS 등록이 완료되었습니다.')
 
 	hospital_name_box.delete(0, END)  # 병원명
 	ocschart_name_box.set('')  # 연동차트
 	ask_type_1_choose.set('')  # 문의유형(대)
 	ask_type_2_choose.set('')  # 문의유형(중)
 	ask_contents.delete('1.0', END)  # 접수내용
+
+	value_1.clear()     # 처리담당자 값을 담는 배열 초기화
+	codes_1.clear()     # # hero_code 값을 담는 배열 초기화
+
+	hospital_name_box.focus()
 
 #=====================================
 # 접수 일자

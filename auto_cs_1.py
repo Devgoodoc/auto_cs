@@ -8,32 +8,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import re
 from threading import Thread
-import py_win_keyboard_layout
-#=====================================
-# 구글스프레드 시트 인증
-scope = ['https://spreadsheets.google.com/feeds']
-credentials = ServiceAccountCredentials.from_json_keyfile_name('cred.json', scope)
-
-gs = gspread.authorize(credentials)     # Key 정보 인증
-
-# CS접수현황 문서 가져오기
-doc = gs.open_by_url('https://docs.google.com/spreadsheets/d/15N7K31hkeaqb8Snq7D2U2N6jTjvtLQ5pip4iW1DK4TU/edit?pli=1#gid=0')
-ws = doc.get_worksheet(0)       # 첫번째 시트 선택
-
-# 병원 접수 도입현황 문서 가져오기
-doc_2 = gs.open_by_url('https://docs.google.com/spreadsheets/d/1iRpmebKnV31cfS9xStu8GedjOxKPmObSAnnZaX-M65A/edit?pli=1#gid=1759562169')
-ws_2 = doc_2.get_worksheet(0)
-
-#val = ws.acell('B1').value      # 지정 셀 데이터 가져오기
-#print(val)
-#val = ws.row_values('1')        # 지정 행 데이터를 리스트 형태로 가져오기
-#print(val)
-#val = ws.col_values('1')        # 지정 열 데이터를 리스트 형태로 가져오기
-#print(val)
-#vals = ws.range('A2:B3')        # 지정 범위 데이터 데이터를 가져오기
-#ws.update_acell('A4533', 'test')    # 지정 셀에 데이터 입력
-#ws.append_row(['test1','test2'])    # 리스트 형태의 데이터를 행 단위로 넣어줌. 데이터를 체크해서 자동으로 비어있는 다음행에 넣어줌
-
+import os
 #=====================================
 win = tk.Tk()
 
@@ -64,6 +39,30 @@ frame6.grid(row=5, column=0, padx=5, pady=5)
 search_result = ""      # 트리뷰 정보가 담긴 변수
 
 add_win_1 = ""          # 외부 윈도우 창 정보가 담긴 변수
+
+# 구글스프레드 시트 인증 정보
+scope = ['https://spreadsheets.google.com/feeds']
+credentials = ServiceAccountCredentials.from_json_keyfile_name('cred.json', scope)
+
+gs = gspread.authorize(credentials)  # Key 정보 인증
+
+# CS접수현황 문서 가져오기
+doc = gs.open_by_url(
+	'https://docs.google.com/spreadsheets/d/15N7K31hkeaqb8Snq7D2U2N6jTjvtLQ5pip4iW1DK4TU/edit?pli=1#gid=0')
+ws = doc.get_worksheet(0)  # 첫번째 시트 선택
+
+# 병원 접수 도입현황 문서 가져오기
+doc_2 = gs.open_by_url(
+	'https://docs.google.com/spreadsheets/d/1iRpmebKnV31cfS9xStu8GedjOxKPmObSAnnZaX-M65A/edit?pli=1#gid=1759562169')
+ws_2 = doc_2.get_worksheet(0)
+
+#val = ws.acell('B1').value      # 지정 셀 데이터 가져오기
+#val = ws.row_values('1')        # 지정 행 데이터를 리스트 형태로 가져오기
+#val = ws.col_values('1')        # 지정 열 데이터를 리스트 형태로 가져오기
+#vals = ws.range('A2:B3')        # 지정 범위 데이터 데이터를 가져오기
+#ws.update_acell('A4533', 'test')    # 지정 셀에 데이터 입력
+#ws.append_row(['test1','test2'])    # 리스트 형태의 데이터를 행 단위로 넣어줌. 데이터를 체크해서 자동으로 비어있는 다음행에 넣어줌
+#=====================================
 
 # 병원 검색 버튼 이벤트
 def _opensearch():
@@ -135,12 +134,14 @@ def _opensearch():
 		search_result.insert('', 'end', text=n1, value=[cell_3[1], cell_3[22], cell_3[23], cell_3[18], cell_3[15], cell_3[12], cell_3[16]])
 
 	#info = search_result.get_children()
-	#print(info)
 
 	search_result.bind('<Double-Button-1>', selectData)     # 더블클릭 이벤트 바인딩 
 
 	search_result.pack()                                    # 최종 화면 그리기
 
+	# 구글 스프레드 시트 인증 갱신
+	gs = gspread.authorize(credentials)  # Key 정보 인증
+	
 	#msg.showinfo('알림', '검색이 완료되었습니다!')         # 검색 완료 후 알림
 
 def selectData(event):                                      # 검색 데이터 더블클릭 시 발생하는 이벤트
@@ -205,7 +206,6 @@ def press_enter(event):                               # 엔터 키 입력 시, �
 	#win.bind('<>', )
 	#win32api.LoadKeyboardLayout('00000412', 1)
 	#print('hi korea')
-
 #py_win_keyboard_layout.load_keyboard_layout("00000412")
 
 #=====================================
@@ -219,8 +219,15 @@ day_of_week = str(datetime.date.today().strftime("%A"))
 
 day_of_week_2 = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
 
+# 슬랙 api 토큰
 #token = 'xoxp-3917885633-113133424242-566008421730-f54b93ee06b701825d46e40c276364c8'       # 만료된 토큰1
-token = 'xoxp-3917885633-113133424242-573146862631-30b1b9e7d9531b32f20e582409895f09'
+#token = 'xoxp-3917885633-113133424242-573146862631-30b1b9e7d9531b32f20e582409895f09'       # 만료된 토큰2
+token = 'xoxp-3917885633-113133424242-579021003588-2393195682d4787132407c9588f1b4ad'
+
+token2 = 'xoxp-3917885633-113133424242-572403869557-5202b060cb7f06a1aeb84119176ed1ae'
+
+token3 = 'xoxb-3917885633-580835534055-Gt4cfq3B8d0EMVeibxrh5i8X'        # Bot User OAuth Access Token
+
 
 sc = SlackClient(token)
 
@@ -296,7 +303,8 @@ def _enrollment():
 	                ask_contents.get('1.0', END).strip(), goodocmon_choose.get(), ocschart_name_box.get(), ask_type_1_choose.get(),
 	                ask_type_2_choose.get(), cs_result]
 
-	ws.append_row(cs_data_list)                 # 리스트 형태의 데이터를 행 단위로 데이터를 체크해서 자동으로 비어있는 다음행에 넣어줌
+	# 리스트 형태의 데이터를 행 단위로 데이터를 체크해서 자동으로 비어있는 다음행에 넣어줌
+	ws.append_row(cs_data_list)
 
 	# 슬랙 알림 기능
 	for n in range(len(hero_list)):
@@ -541,7 +549,7 @@ cs_state_combo_row = 0
 #def _clickCombo_2():
 	#return cs_state.get()
 
-state_list = ['처리 중', '처리 완료', '보류']
+state_list = ['처리중', '처리 완료', '보류']
 
 cs_state = tk.IntVar()
 
