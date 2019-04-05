@@ -1,14 +1,13 @@
 from cx_Freeze import setup, Executable
 import os
-#import sys
 
 os.environ['TCL_LIBRARY'] = r'C:\Users\Goodoc\AppData\Local\Programs\Python\Python36-32\tcl\tcl8.6'
 os.environ['TK_LIBRARY'] = r'C:\Users\Goodoc\AppData\Local\Programs\Python\Python36-32\tcl\tk8.6'
 
 build_exe_options = dict(
         packages = ["idna"],
-        includes = ["sys", "os", "datetime", "tkinter", "slackclient", "gspread", "oauth2client", "urllib3", "json", "requests", "re", "threading"],
-        include_files = ["cred.json", "tcl86t.dll", "tk86t.dll"]
+        includes = ["sys", "os", "datetime", "tkinter", "slackclient", "gspread", "oauth2client", "urllib3", "json", "requests", "re", "threading", "logging"],
+        include_files = ["cred.json", "tcl86t.dll", "tk86t.dll", "token_info.txt"]
 )
 
 #base = None
