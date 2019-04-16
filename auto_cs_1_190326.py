@@ -11,48 +11,6 @@ from threading import Thread
 import json
 import requests
 from pprint import pprint
-import logging
-from logging import handlers
-
-#=====================================
-# 로그 출력
-# 로그 수준 :: DEBUG < INFO < WARNING < ERROR < CRITICAL (기본값 = WARNING)
-# logging.basicConfig(filename='./Debug_log.txt', level=logging.DEBUG)
-
-if __name__ == '__main__':
-	# 커스텀 로거 생성
-	#mylogger = logging.getLogger("Log")
-
-	# 로그 레벨 설정
-	#mylogger.setLevel(logging.DEBUG)
-
-	formatter = logging.Formatter('%(asctime)s - line %(lineno)d - %(message)s')
-
-	# 콘솔에 로그 출력하기
-	#stream_handler = logging.StreamHandler()
-	#stream_handler.setFormatter(formatter)
-	#mylogger.addHandler(stream_handler)
-
-	# 파일 디렉토리에 로그 생성하기
-	#file_handler = logging.FileHandler("console_log.log")
-	#file_handler.setFormatter(formatter)
-	#mylogger.addHandler(file_handler)
-
-	#------
-	# 파일 디렉토리에 로그 생성하기2
-	day_logHandler = handlers.TimedRotatingFileHandler(filename='log.log', when='midnight', interval=1, encoding='utf-8')
-	day_logHandler.setFormatter(formatter)
-	day_logHandler.suffix = "%Y%m%d"
-
-	day_logger = logging.getLogger()
-	day_logger.setLevel(logging.DEBUG)
-	day_logger.addHandler(day_logHandler)
-	#------
-
-	# 첫 구동 시 찍히는 로그
-	#mylogger.info("process start!!")
-
-	day_logger.info("Log Start!")
 #=====================================
 win = tk.Tk()
 
@@ -110,7 +68,7 @@ val_5 = ws_2.col_values('16')               # 요양기관번호
 val_6 = ws_2.col_values('13')               # 전화번호
 val_7 = ws_2.col_values('17')               # 주소
 
-#pprint(val_1)
+#print(val_1)
 
 #ws_2.update_acell('S2131', '-')
 
@@ -137,6 +95,7 @@ def _opensearch():
 	#print(val_1[1691])
 	#print(val_1[1813])
 	print(val_7[849].strip())
+
 
 	for n in range(len(val_1)):
 		if hospital_name_box.get() in val_1[n]:
@@ -217,7 +176,7 @@ def selectData(event):                                      # 검색 데이터 �
 	get_data_1 = search_result.identify_row(event.y)
 	#print("get_data_1: ", get_data_1)
 	get_data_2 = search_result.set(get_data_1)              # 선택한 json 데이터 정보 가져오기
-	print("get_data_2: ", get_data_2)
+	print("get_data_2: ",get_data_2)
 
 	search_data_0 = get_data_2['hospital_name']
 	search_data_1 = get_data_2['chart_name']
@@ -245,51 +204,43 @@ def selectData(event):                                      # 검색 데이터 �
 	ask_type_1_choose.focus()
 
 	add_win_1.destroy()                               # 검색 결과 창 닫기
-#------
+
 def click_me():                                       # 검색 버튼 클릭 시 command에 담아야 할 이벤트
 	create_thread()                                   # 쓰레드 메서드 호출
 	print("create thread : search")
 	print('---')
 
 def create_thread():
-	run_thread = Thread(target=_opensearch)           # 검색 시 쓰레드 생성
+	run_thread = Thread(target=_opensearch)           # 메서드 대상 지정
 	run_thread.setDaemon(True)
 	run_thread.start()
 	print('검색 쓰레드 시작 : ', run_thread)
 	print('---')
 
-def press_enter(event):                               # 엔터 키 입력 시, 검색 수행 함수
-	click_me()
-	print("키 입력이 들어왔다 : i am enter")
-	print('---')
-#------
-function_count = [0]
-
-def click_me_2():                                     # 등록 버튼 클릭 시
-	global function_count
-	print(function_count)
-
-	if function_count[0] == 1:
-		print("이미 눌렀음")
-		return
-
-	create_thread_2()
-	print("create thread : insert & send")
+def click_me_2():                                     # 등록 버튼 클릭 시 command에 담아야 할 이벤트
+	create_thread()
+	print("create thread : press")
 	print('---')
 
 def create_thread_2():
-	run_thread = Thread(target=_enrollment)           # 등록 시 쓰레드 생성
+	run_thread = Thread(target=_enrollment)           # 메서드 대상 지정
 	run_thread.setDaemon(True)
 	run_thread.start()
 	print(run_thread)
 	print('---')
-#------
+
+def press_enter(event):                               # 엔터 키 입력 시, 검색 수행
+	click_me()
+	print("키 입력이 들어왔다 : i am enter")
+	print('---')
+
 #def press_korean_key():
 	#win.bind('<>', )
 	#win32api.LoadKeyboardLayout('00000412', 1)
 	#print('hi korea')
 #py_win_keyboard_layout.load_keyboard_layout("00000412")
 
+#=====================================
 #=====================================
 # 전역/날짜 변수
 now = str(datetime.datetime.now())
@@ -310,7 +261,6 @@ slack_url_4 = 'https://hooks.slack.com/services/T03SZS1JM/BH24P5R8D/Scu64BMoJxtN
 slack_url_5 = 'https://hooks.slack.com/services/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'  # cs_기타문의
 
 slack_channel_list = [slack_url_0, slack_url_1, slack_url_2, slack_url_3, slack_url_4, slack_url_5]
-
 slack_channel_code = ['CE130FQK0', 'CE1315D0E', 'CDZFP52G4', 'CE132QH0E', 'CDZSN4Z5K', 'CDZ2ZMY73', 'C8HPB458T']
 
 value_1 = list()        # 처리담당자 값을 담는 배열
@@ -329,11 +279,6 @@ sc = SlackClient(slack_bot_token)
 #=====================================
 # 등록하기 버튼 이벤트
 def _enrollment():
-	global function_count
-
-	function_count[0] = 1
-	print(function_count)
-
 	# 토큰 리프레쉬
 	if credentials.access_token_expired:
 		gs.login()
@@ -363,7 +308,6 @@ def _enrollment():
 		msg.showwarning('경고', '처리 상태를 선택해주세요.')
 		return
 
-	#------
 	# CS 처리 상태 값 전환
 	if cs_state.get() == 1:
 		cs_result = state_list[0]
@@ -399,50 +343,36 @@ def _enrollment():
 			codes_1.append(hero_codes[n])       # 체크된 이름의 hero_code를 배열에 추가한다.
 			value_2.append(hero_list[n])        # 체크된 상태값의 한글이름을 담는 배열
 
-	#-----------
+	# 스프레드 시트 행 데이터 셋팅
+	cs_data_list = [receipt_date_box.get(), day_of_korean, hospital_name_box.get(), unique_hospital_number_box.get(), hospital_phone_number_box.get(),
+	                ask_contents.get('1.0', END).strip(), goodocmon_choose.get(), ocschart_name_box.get(), ask_type_1_choose.get(),
+	                ask_type_2_choose.get(), cs_result, "", success_contents.get('1.0',END).strip(), ",\n".join(value_2)]
+
+	# 리스트 형태의 데이터를 행 단위로 데이터를 체크해서 자동으로 비어있는 다음행에 넣어줌
+	ws.append_row(cs_data_list)
+
 	# 채널 선택 값 수집
 	final_channel = channel_state.get()
 
 	if final_channel == 0:
 		channel_name = slack_channel_list[0]
 		channel_code = slack_channel_code[0]
-		channel_string = channel_list[0]
 	elif final_channel == 1:
 		channel_name = slack_channel_list[1]
 		channel_code = slack_channel_code[1]
-		channel_string = channel_list[1]
 	elif final_channel == 2:
 		channel_name = slack_channel_list[2]
 		channel_code = slack_channel_code[2]
-		channel_string = channel_list[2]
 	elif final_channel == 3:
 		channel_name = slack_channel_list[3]
 		channel_code = slack_channel_code[3]
-		channel_string = channel_list[3]
 	elif final_channel == 4:
 		channel_name = slack_channel_list[4]
 		channel_code = slack_channel_code[4]
-		channel_string = channel_list[4]
 	elif final_channel == 5:
 		channel_name = slack_channel_list[5]
 		channel_code = slack_channel_code[5]
-		channel_string = channel_list[5]
 
-	#-----------
-	# 행 번호 추출
-	#row_count_2 = str(len(ws.col_values(15)))
-	row_count = str(int(ws.col_values(15)[-1]) + 1)
-
-	#-----------
-	# 스프레드 시트 행 데이터 셋팅
-	cs_data_list = [receipt_date_box.get(), day_of_korean, hospital_name_box.get(), unique_hospital_number_box.get(), hospital_phone_number_box.get(),
-	                ask_contents.get('1.0', END).strip(), goodocmon_choose.get(), ocschart_name_box.get(), ask_type_1_choose.get(),
-	                ask_type_2_choose.get(), cs_result, "", success_contents.get('1.0',END).strip(), ",\n".join(value_2), row_count, channel_string]
-
-	# 리스트 형태의 데이터를 행 단위로 데이터를 체크해서 자동으로 비어있는 다음행에 넣어줌
-	ws.append_row(cs_data_list)
-
-	#-----------
 	# 슬랙 메세지 셋팅
 	message_1 = "■ 병원명: " + hospital_name_box.get() + '\n' + \
 	            "■ 연동차트명: " +  ocschart_name_box.get() + '\n' + \
@@ -451,7 +381,6 @@ def _enrollment():
 				"■ 전화번호: " + hospital_phone_number_box.get() + '\n' + \
 				"■ 문의유형: " + ask_type_2_choose.get() + '\n' + \
 				"■ CS 접수자: " + goodocmon_choose.get() + '\n' + \
-				"■ 행 ID: " + row_count + '\n' + \
 				'\n' + \
 				"▣ 문의내용" + '\n' +  ask_contents.get('1.0', END).strip() + '\n' + \
 				'\n' + \
@@ -461,32 +390,40 @@ def _enrollment():
 	            '\n' + \
 	            "▣ 처리상태" + '\n' + cs_result
 
-	payload = {"text": message_1}
+	content = message_1
+	payload = {"text": content}
 
 	# 배포용 슬랙 메세지
 	request_result = requests.post(channel_name, data=json.dumps(payload), headers={'Content-Type': 'application/json'})
+
 	print(request_result)
+	if request_result.status_code != 200:
+		msg.showwarning('앗! 이런..', '슬랙 메시지 전송에 실패했습니다.' )
+		return
 
-	#if request_result.status_code != 200:
-	#	msg.showwarning('앗! 이런..', '슬랙 상태가 이상하네요.' )
+	# 테스트용 슬랙 메세지
+	#test_slack_channel_url = 'https://hooks.slack.com/services/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'
+	#test_request_result = requests.post(test_slack_channel_url, data=json.dumps(payload), headers={'Content-Type': 'application/json'})
+	#print(test_request_result.status_code)
+	#print("history", test_request_result.history)
+	#print("content", test_request_result.content)
+	#print(test_request_result)
 
+	#print(test_request_result.raw)
+	#print(test_request_result.reason)
+	#print(test_request_result.headers)
+
+	#if test_request_result.status_code != 200:
+	#	msg.showwarning('앗! 이런..', '슬랙 메시지 전송에 실패했습니다.' )
+	#	return
+
+	#-----------
 	# 등록한 슬랙 메세지에 핀 처리
 	if cs_state.get() == 1:
 		info = sc.api_call("channels.info", channel=channel_code)
 		msg_ts = info['channel']['latest']['ts']
 		pin = sc.api_call("pins.add", channel=channel_code, timestamp=msg_ts)
 		print(pin["ok"])
-
-	#-----------
-	# 테스트용 슬랙 메세지
-
-	#test_slack_channel_url = 'https://hooks.slack.com/services/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'
-	#test_request_result = requests.post(test_slack_channel_url, data=json.dumps(payload), headers={'Content-Type': 'application/json'})
-
-	#print(test_request_result.status_code)
-
-	#if test_request_result.status_code != 200:
-	#	msg.showwarning('앗! 이런..', '슬랙 상태가 이상하네요.' )
 
 	# 테스트용 핀처리
 	#if cs_state.get() == 1:
@@ -498,7 +435,6 @@ def _enrollment():
 	#	print(pin)
 	#	print(pin["ok"])
 
-	#-----------
 	msg.showinfo('결과', 'CS 등록이 완료되었습니다.')		# 등록완료 메세지 호출
 
 	#-----------
@@ -525,12 +461,7 @@ def _enrollment():
 		if check_state.get() == 1:
 			check_state.set('0')
 
-	# 버튼 카운터 초기화
-	function_count[0] = 0
-	print("등록 끝: ", function_count)
-	#-----------
-	# 병원명 입력 칸으로 포커싱 이동
-	hospital_name_box.focus()
+	hospital_name_box.focus()                               # 병원명 입력 칸으로 포커싱 이동
 
 #=====================================
 # 접수 일자
@@ -733,7 +664,7 @@ cs_radio_3.deselect()
 #ttk.Label(win, text='* CS 등록하기').grid(row=10, column=0, sticky='W')
 
 # CS 등록하기 버튼
-action_1 = ttk.Button(frame6, text="뀨우!", command=click_me_2).grid(row=0, column=0, padx=5, pady=5)
+action_1 = ttk.Button(frame6, text="뀨우!", command=create_thread_2).grid(row=0, column=0, padx=5, pady=5)
 
 #=====================================
 # 최초 실행 시 포커싱 위치 = CS 접수자
