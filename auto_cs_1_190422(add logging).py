@@ -488,18 +488,18 @@ def _enrollment():
 	payload = {"text": message_1}
 
 	# 배포용 슬랙 메세지
-	request_result = requests.post(channel_name, data=json.dumps(payload), headers={'Content-Type': 'application/json'})
-	print(request_result)
+	#request_result = requests.post(channel_name, data=json.dumps(payload), headers={'Content-Type': 'application/json'})
+	#print(request_result)
 
 	#if request_result.status_code != 200:
 	#	msg.showwarning('앗! 이런..', '슬랙 상태가 이상하네요.' )
 
 	# 등록한 슬랙 메세지에 핀 처리
-	if cs_state.get() == 1:
-		info = sc.api_call("channels.info", channel=channel_code)
-		msg_ts = info['channel']['latest']['ts']
-		pin = sc.api_call("pins.add", channel=channel_code, timestamp=msg_ts)
-		print(pin["ok"])
+	#if cs_state.get() == 1:
+	#	info = sc.api_call("channels.info", channel=channel_code)
+	#	msg_ts = info['channel']['latest']['ts']
+	#	pin = sc.api_call("pins.add", channel=channel_code, timestamp=msg_ts)
+	#	print(pin["ok"])
 
 	f = open("log.txt", 'a')
 	f.write('---' + '\n' + "cs등록 완료" + '\n' + '---' + '\n' + str(message_1) + '\n')
