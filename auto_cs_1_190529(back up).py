@@ -13,7 +13,6 @@ import logging
 from logging import handlers
 from pprint import pprint
 import time
-import pickle
 #=====================================
 # 로그 출력
 # 로그 수준 :: DEBUG < INFO < WARNING < ERROR < CRITICAL (기본값 = WARNING)
@@ -60,63 +59,31 @@ win.title("CS 등록 프로그램")
 
 win.resizable(False, False)
 
-frame8 = tk.LabelFrame(win, text='1. CS 접수자 선택')
-frame8.grid(row=0, column=0, padx=5, pady=5)
-
 frame1 = tk.LabelFrame(win, text=' 기본정보 입력')
-frame1.grid(row=1, column=0, padx=5, pady=5)
+frame1.grid(row=0, column=0, padx=5, pady=5)
 
 frame2 = tk.LabelFrame(win, text=' 5. 문의내용')
-frame2.grid(row=2, column=0, padx=5, pady=5)
+frame2.grid(row=1, column=0, padx=5, pady=5)
 
 frame7 = tk.LabelFrame(win, text=' 6. 처리내용')
-frame7.grid(row=3, column=0, padx=5, pady=5)
+frame7.grid(row=2, column=0, padx=5, pady=5)
 
 frame3 = tk.LabelFrame(win, text=' 7. CS 채널 선택')
-frame3.grid(row=4, column=0, padx=5, pady=5)
-#---
-frame9 = tk.LabelFrame(win, text=' 8. 문의 유형 선택')
-frame9.grid(row=5, column=0, padx=5, pady=5)
+frame3.grid(row=3, column=0, padx=5, pady=5)
 
-frame9_a = tk.LabelFrame(frame9, text=' - 오류처리')
-frame9_a.grid(row=0, column=0, padx=5, pady=5, sticky='N')
-
-frame9_b = tk.LabelFrame(frame9, text=' - 장비이슈')
-frame9_b.grid(row=0, column=1, padx=5, pady=5, sticky='N')
-
-frame9_c = tk.LabelFrame(frame9, text=' - 기타문의')
-frame9_c.grid(row=0, column=2, padx=5, pady=5)
-
-frame9_d = tk.LabelFrame(frame9, text=' - 철수요청')
-frame9_d.grid(row=0, column=3, padx=5, pady=5, sticky='N')
-#---
 frame4 = tk.LabelFrame(win, text=' 8. 처리 담당자 지정 (※ 슬랙 알림 발송)')
-frame4.grid(row=6, column=0, padx=5, pady=5)
+frame4.grid(row=4, column=0, padx=5, pady=5)
 
-frame5 = tk.LabelFrame(win, text=' 9. 처리 상태')
-frame5.grid(row=7, column=0, padx=5, pady=5)
+frame5 = tk.LabelFrame(win, text=' 9. 처리 상태 ')
+frame5.grid(row=5, column=0, padx=5, pady=5)
 
 frame6 = tk.LabelFrame(win, text='10. CS 등록하기')
-frame6.grid(row=8, column=0, padx=5, pady=5)
+frame6.grid(row=6, column=0, padx=5, pady=5)
 
 #-------------------------------------
 # 전역변수1
 search_result = ""      # 트리뷰 정보가 담긴 변수
 add_win_1 = ""          # 외부 윈도우 창 정보가 담긴 변수
-
-#local_date = time.strftime('%x', time.localtime(time.time()))
-#print(local_date)
-
-#with open('gs_check_info.txt', 'r') as f1:
-#	date_check = f1.read()
-#	print(date_check)
-
-#if local_date == date_check:
-#	print('날짜가 같다')
-#else:
-#	print('날짜가 다르다')
-
-#with open('gs_data.txt', 'wb') as f2:
 
 # 구글스프레드 시트 인증 정보
 scope = ['https://spreadsheets.google.com/feeds']
@@ -141,9 +108,9 @@ val_4 = ws_2.col_values('19')               # 설치 시 특이사항
 val_5 = ws_2.col_values('16')               # 요양기관번호
 val_6 = ws_2.col_values('13')               # 전화번호
 val_7 = ws_2.col_values('17')               # 주소
-val_8 = ws_2.col_values('3')                # 설치상태
 
-#pprint(pickle_val_1)
+#pprint(val_1)
+
 #ws_2.update_acell('S2131', '-')
 
 #=====================================
@@ -151,6 +118,8 @@ val_8 = ws_2.col_values('3')                # 설치상태
 def _opensearch():
 	global search_result
 	global add_win_1
+
+
 
 	if not hospital_name_box.get():
 		msg.showwarning("경고", "병원명을 입력해주세요!")
@@ -206,13 +175,13 @@ def _opensearch():
 	# 검색 결과 창 그리기
 	add_win_1 = Toplevel(win)
 	add_win_1.title("검색 결과")
-	add_win_1.geometry("1350x470")
+	add_win_1.geometry("1150x470")
 	add_win_1.resizable(False, False)
 
 	# 트리 뷰 그리기
 	#columns_number = ['#0', '#1', '#2', '#3', '#4', '#5', '#6', '#7']
-	columns_list = ['hospital_name', 'chart_name', 'install_version', 'install_uniqueness', 'hospital_code', 'hospital_phone_number', 'hospital_address', 'install_status']
-	columns_name = ['병원명', '사용차트', '버전', '설치 시 특이사항', '요양기관번호', '전화번호', '주소', '설치 상태']
+	columns_list = ['hospital_name', 'chart_name', 'install_version', 'install_uniqueness', 'hospital_code', 'hospital_phone_number', 'hospital_address']
+	columns_name = ['병원명', '사용차트', '버전', '설치 시 특이사항', '요양기관번호', '전화번호', '주소']
 
 	search_result = tk.ttk.Treeview(add_win_1, columns=columns_list, height=20, padding=20)
 
@@ -240,13 +209,10 @@ def _opensearch():
 	search_result.column('#7', width=400)                   # 주소
 	search_result.heading('#7', text=columns_name[6])
 
-	search_result.column('#8', width=200)                   # 설치 상태
-	search_result.heading('#8', text=columns_name[7])
-
 	# 데이터 삽입 처리 2
 	for n2 in range(len(result_index)):
 		n3 = result_index[n2]
-		search_result.insert('', 'end', text="*", value=[val_1[n3], val_2[n3], val_3[n3], val_4[n3], val_5[n3], val_6[n3], val_7[n3].strip(), val_8[n3]])
+		search_result.insert('', 'end', text="*", value=[val_1[n3], val_2[n3], val_3[n3], val_4[n3], val_5[n3], val_6[n3], val_7[n3].strip()])
 
 	search_result.bind('<Double-Button-1>', selectData)     # 더블클릭 이벤트 바인딩 
 
@@ -270,7 +236,6 @@ def selectData(event):                                      # 검색 데이터 �
 	search_data_3 = get_data_2['hospital_code']
 	search_data_4 = get_data_2['hospital_phone_number']
 	search_data_5 = get_data_2['install_uniqueness']
-	search_data_6 = get_data_2['install_status']
 
 	# 조회 값 초기화
 	hospital_name_box.delete(0, END)
@@ -279,7 +244,6 @@ def selectData(event):                                      # 검색 데이터 �
 	unique_hospital_number_box.delete(0, END)         # 요양기관번호
 	hospital_phone_number_box.delete(0, END)          # 병원 전화번호
 	install_uniqueness_box.delete(0, END)             # 설치 시 특이사항
-	install_status_box.delete(0, END)                 # 설치 상태
 
 	# 조회 값 입력
 	hospital_name_box.insert(INSERT, search_data_0)
@@ -288,9 +252,8 @@ def selectData(event):                                      # 검색 데이터 �
 	unique_hospital_number_box.insert(INSERT, search_data_3)
 	hospital_phone_number_box.insert(INSERT, search_data_4)
 	install_uniqueness_box.insert(INSERT, search_data_5)
-	install_status_box.insert(INSERT, search_data_6)
 
-	ask_contents.focus()
+	ask_type_1_choose.focus()
 
 	add_win_1.destroy()                               # 검색 결과 창 닫기
 #------
@@ -311,7 +274,6 @@ def press_enter(event):                               # 엔터 키 입력 시, �
 	print("키 입력이 들어왔다 : i am enter")
 	print('---')
 #------
-#======
 function_count = [0]
 
 def click_me_2():                                     # 등록 버튼 클릭 시
@@ -322,7 +284,8 @@ def click_me_2():                                     # 등록 버튼 클릭 시
 	if credentials.access_token_expired:
 		gs.login()
 		print("restart")
-		#msg.showwarning("경고", "토큰이 만료되어 재로그인을 수행했습니다. \n 잠시만 기다려주세요.")
+		#msg.showwarning("경고", "토큰이 만료되어 재로그인을 수행했습니다. \n '뀨우!' 버튼을 다시 눌러주세요.")
+		msg.showwarning("경고", "토큰이 만료되어 재로그인을 수행했습니다. \n 잠시만 기다려주세요.")
 
 		f = open("log.txt", 'a')
 		f.write("토큰값 만료로 인하여 갱신하였습니다." + '\n')
@@ -379,17 +342,16 @@ slack_channel_list = [slack_url_0, slack_url_1, slack_url_2, slack_url_3, slack_
 
 slack_channel_code = ['CE130FQK0', 'CE1315D0E', 'CDZFP52G4', 'CE132QH0E', 'CDZSN4Z5K', 'CDZ2ZMY73', 'C8HPB458T']
 
-value_1 = list()        # 처리담당자 선택 값을 담는 배열
-value_2 = list()        # 처리담당자 값을 담아 한글이름값을 담는 배열
-codes_1 = list()        # hero_code 값을 담는 배열
+value_1 = list()        # 처리담당자 값을 담는 배열
 
-value_3 = list()        # 문의 유형 선택 값을 담는 배열
-value_4 = list()        # 문의 유형 스트링 값을 담는 배열
+value_2 = list()        # 처리담당자 값을 담아 한글이름값을 담는 배열
+
+codes_1 = list()        # hero_code 값을 담는 배열
 
 # 슬랙 봇 유저 OAuth Access Token
 get_token_data = open("token_info.txt")
 slack_bot_token = get_token_data.readline()
-#print(slack_bot_token)
+print(slack_bot_token)
 
 sc = SlackClient(slack_bot_token)
 
@@ -399,7 +361,7 @@ def _enrollment():
 	global function_count
 
 	# 오류 처리 알림
-	if not cs_goodocmon_state.get():
+	if not goodocmon_choose.get():
 		msg.showwarning('경고', 'CS 접수자를 선택해주세요.')
 		return
 	if not hospital_name_box.get():
@@ -408,12 +370,12 @@ def _enrollment():
 	if not ocschart_name_box.get():
 		msg.showwarning('경고', '연동차트를 선택해주세요.')
 		return
-	#if not ask_type_1_choose.get():
-	#	msg.showwarning('경고', '문의 유형을 선택해주세요.')
-	#	return
-	#if not ask_type_2_choose.get():
-	#	msg.showwarning('경고', '문의 유형을 선택해주세요.')
-	#	return
+	if not ask_type_1_choose.get():
+		msg.showwarning('경고', '문의 유형을 선택해주세요.')
+		return
+	if not ask_type_2_choose.get():
+		msg.showwarning('경고', '문의 유형을 선택해주세요.')
+		return
 	if not ask_contents.get('1.0', END).strip():
 		msg.showwarning('경고', '문의내용을 입력해주세요.')
 		return
@@ -422,18 +384,16 @@ def _enrollment():
 		return
 
 	function_count[0] = 1
-	print("function_count", function_count)
+	print(function_count)
 
 	#------
-	# CS 처리 상태 값 수집
+	# CS 처리 상태 값 전환
 	if cs_state.get() == 1:
 		cs_result = state_list[0]
 	elif cs_state.get() == 2:
 		cs_result = state_list[1]
 	elif cs_state.get() == 3:
 		cs_result = state_list[2]
-
-	print("cs_result", cs_result)
 
 	# 날짜 정보 수집
 	getDayNumber = datetime.date(int(receipt_date_box.get()[0:4]),int(receipt_date_box.get()[5:7]),int(receipt_date_box.get()[8:10])).weekday()
@@ -454,40 +414,13 @@ def _enrollment():
 	elif getDayNumber == 6:
 		day_of_korean = day_of_week_2[6]
 
-	# CS 접수자 선택 값 수집
-	if cs_goodocmon_state.get() == 1:
-		goodocmon = goodocmon_list[0]
-	elif cs_goodocmon_state.get() == 2:
-		goodocmon = goodocmon_list[1]
-	elif cs_goodocmon_state.get() == 3:
-		goodocmon = goodocmon_list[2]
-	elif cs_goodocmon_state.get() == 4:
-		goodocmon = goodocmon_list[3]
-	elif cs_goodocmon_state.get() == 5:
-		goodocmon = goodocmon_list[4]
-	elif cs_goodocmon_state.get() == 6:
-		goodocmon = goodocmon_list[5]
-	elif cs_goodocmon_state.get() == 7:
-		goodocmon = goodocmon_list[6]
-	elif cs_goodocmon_state.get() == 8:
-		goodocmon = goodocmon_list[7]
-
 	# 처리 담당자 선택 값 수집
 	for n in range(len(hero_list)):
-		value_1.append(hero_states[n].get())    # 처리담당자 체크박스 상태값을 배열에 추가한다.
+		value_1.append(hero_states[n].get())    # 체크박스의 상태값을 배열에 추가한다.
 
 		if value_1[n] == 1:
 			codes_1.append(hero_codes[n])       # 체크된 이름의 hero_code를 배열에 추가한다.
 			value_2.append(hero_list[n])        # 체크된 상태값의 한글이름을 담는 배열
-
-	# 문의 유형 선택 값 수집
-	for n2 in range(len(ask_values)):
-		value_3.append(ask_values[n2].get())    # 문의 유형 체크박스 상태값을 배열에 추가한다.
-
-		if value_3[n2] == 1:
-			value_4.append(ask_value_list[n2])
-
-	print("value_4", value_4)
 
 	#-----------
 	# 채널 선택 값 수집
@@ -526,12 +459,11 @@ def _enrollment():
 	#-----------
 	# 스프레드 시트 행 데이터 셋팅
 	cs_data_list = [receipt_date_box.get(), day_of_korean, hospital_name_box.get(), unique_hospital_number_box.get(), hospital_phone_number_box.get(),
-	                ask_contents.get('1.0', END).strip(), goodocmon, ocschart_name_box.get(),'', ",\n".join(value_4), cs_result, "",
-	                success_contents.get('1.0',END).strip(), ",\n".join(value_2), row_count, channel_string,
-	                install_status_box.get()]
+	                ask_contents.get('1.0', END).strip(), goodocmon_choose.get(), ocschart_name_box.get(), ask_type_1_choose.get(),
+	                ask_type_2_choose.get(), cs_result, "", success_contents.get('1.0',END).strip(), ",\n".join(value_2), row_count, channel_string]
 
 	# 리스트 형태의 데이터를 행 단위로 데이터를 체크해서 자동으로 비어있는 다음행에 넣어줌
-	print(ws.append_row(cs_data_list))
+	ws.append_row(cs_data_list)
 
 	#-----------
 	# 슬랙 메세지 셋팅
@@ -539,15 +471,14 @@ def _enrollment():
 	            "■ 연동차트명: " +  ocschart_name_box.get() + '\n' + \
 	            "■ 요양기관번호: " + unique_hospital_number_box.get() + '\n' + \
 	            "■ 사용버전: " + version_string_box.get() + '\n' + \
-				"■ 설치상태: " + install_status_box.get() + '\n' + \
 				"■ 전화번호: " + hospital_phone_number_box.get() + '\n' + \
-				"■ 문의유형: " + ', '.join(value_4) + '\n' + \
-				"■ CS 접수자: " + goodocmon + '\n' + \
+				"■ 문의유형: " + ask_type_2_choose.get() + '\n' + \
+				"■ CS 접수자: " + goodocmon_choose.get() + '\n' + \
 				"■ 행 ID: " + row_count + '\n' + \
 				'\n' + \
-				"▣ 문의내용" + '\n' + ask_contents.get('1.0', END).strip() + '\n' + \
+				"▣ 문의내용" + '\n' +  ask_contents.get('1.0', END).strip() + '\n' + \
 				'\n' + \
-	            "▣ 처리 담당자" + '\n' + ", ".join(codes_1) + '\n' + \
+	            "▣ 처리 담당자" + '\n' + ",".join(codes_1) + '\n' + \
 	            '\n' + \
 	            "▣ 처리 내용" + '\n' + success_contents.get('1.0', END).strip() + '\n' + \
 	            '\n' + \
@@ -573,6 +504,7 @@ def _enrollment():
 	f.write('---' + '\n' + "cs등록 완료" + '\n' + '---' + '\n' + str(message_1) + '\n')
 	f.write('---' + '\n')
 	f.close()
+
 	#-----------
 	# 테스트용 슬랙 메세지
 
@@ -585,23 +517,24 @@ def _enrollment():
 	#	msg.showwarning('앗! 이런..', '슬랙 상태가 이상하네요.' )
 
 	# 테스트용 핀처리
-
 	#if cs_state.get() == 1:
 	#	info = sc.api_call("channels.info", channel='C8HPB458T')
 	#	msg_ts = info['channel']['latest']['ts']
 	#	print("info: ", info)
+
 	#	pin = sc.api_call("pins.add", channel='C8HPB458T', timestamp=msg_ts)
 	#	print(pin)
 	#	print(pin["ok"])
 
 	#-----------
 	msg.showinfo('결과', 'CS 등록이 완료되었습니다.')		# 등록완료 메세지 호출
+
 	#-----------
 	# 입력값 초기화
 	hospital_name_box.delete(0, END)                        # 병원명 초기화
 	ocschart_name_box.set('')                               # 연동차트 초기화
-	#ask_type_1_choose.set('')                               # 문의유형(대) 초기화
-	#ask_type_2_choose.set('')                               # 문의유형(중) 초기화
+	ask_type_1_choose.set('')                               # 문의유형(대) 초기화
+	ask_type_2_choose.set('')                               # 문의유형(중) 초기화
 	ask_contents.delete('1.0', END)                         # 접수내용 초기화
 	success_contents.delete('1.0', END)                     # 처리내용 초기화
 
@@ -610,177 +543,130 @@ def _enrollment():
 	unique_hospital_number_box.delete(0, END)               # 요양기관번호
 	hospital_phone_number_box.delete(0, END)                # 병원 전화번호
 	install_uniqueness_box.delete(0, END)                   # 설치 시 특이사항
-	install_status_box.delete(0, END)                       # 설치 상태
 
 	value_1.clear()                                         # 처리담당자 값을 담는 배열 초기화
 	value_2.clear()                                         # 처리담당자(한글) 값을 담는 배열 초기화
 	codes_1.clear()                                         # hero_code 값을 담는 배열 초기화
-
-	value_3.clear()                                         # 문의 유형 값을 담는 배열 초기화
-	value_4.clear()                                         # 문의 유형 스트링 값을 담는 배열 초기화
 
 	for n5 in range(len(hero_states)):                      # 처리담당자 지정 선택값 초기화
 		check_state = hero_states[n5]
 		if check_state.get() == 1:
 			check_state.set('0')
 
-	for n6 in range(len(ask_values)):                       # 문의 유형 선택값 초기화
-		check_state_2 = ask_values[n6]
-		if check_state_2.get() == 1:
-			check_state_2.set('0')
-
 	# 버튼 카운터 초기화
 	function_count[0] = 0
-	print("등록 끝:", function_count)
+	print("등록 끝: ", function_count)
 	#-----------
 	# 병원명 입력 칸으로 포커싱 이동
 	hospital_name_box.focus()
 
 #=====================================
-# CS 접수자 선택 라디오 버튼
-
-cs_goodocmon_combo_row = 0
-
-goodocmon_list = ['데이브', '스미스', '테오', '도로시', '르윈', '벨라', '폴', '스테파니']
-
-cs_goodocmon_state = tk.IntVar()
-
-cs_goodocmon_radio_1 = tk.Radiobutton(frame8, text=goodocmon_list[0], variable=cs_goodocmon_state, value=1)
-cs_goodocmon_radio_1.grid(row=cs_goodocmon_combo_row, column=0)
-cs_goodocmon_radio_1.deselect()
-
-cs_goodocmon_radio_2 = tk.Radiobutton(frame8, text=goodocmon_list[1], variable=cs_goodocmon_state, value=2)
-cs_goodocmon_radio_2.grid(row=cs_goodocmon_combo_row, column=1)
-cs_goodocmon_radio_2.deselect()
-
-cs_goodocmon_radio_3 = tk.Radiobutton(frame8, text=goodocmon_list[2], variable=cs_goodocmon_state, value=3)
-cs_goodocmon_radio_3.grid(row=cs_goodocmon_combo_row, column=2)
-cs_goodocmon_radio_3.deselect()
-
-cs_goodocmon_radio_4 = tk.Radiobutton(frame8, text=goodocmon_list[3], variable=cs_goodocmon_state, value=4)
-cs_goodocmon_radio_4.grid(row=cs_goodocmon_combo_row, column=3)
-cs_goodocmon_radio_4.deselect()
-
-cs_goodocmon_radio_5 = tk.Radiobutton(frame8, text=goodocmon_list[4], variable=cs_goodocmon_state, value=5)
-cs_goodocmon_radio_5.grid(row=cs_goodocmon_combo_row, column=4)
-cs_goodocmon_radio_5.deselect()
-
-cs_goodocmon_radio_6 = tk.Radiobutton(frame8, text=goodocmon_list[5], variable=cs_goodocmon_state, value=6)
-cs_goodocmon_radio_6.grid(row=cs_goodocmon_combo_row, column=5)
-cs_goodocmon_radio_6.deselect()
-
-cs_goodocmon_radio_7 = tk.Radiobutton(frame8, text=goodocmon_list[6], variable=cs_goodocmon_state, value=7)
-cs_goodocmon_radio_7.grid(row=cs_goodocmon_combo_row, column=6)
-cs_goodocmon_radio_7.deselect()
-
-cs_goodocmon_radio_8 = tk.Radiobutton(frame8, text=goodocmon_list[7], variable=cs_goodocmon_state, value=8)
-cs_goodocmon_radio_8.grid(row=cs_goodocmon_combo_row, column=7)
-cs_goodocmon_radio_8.deselect()
-
-#-------------------------------------
 # 접수 일자
 ttk.Label(frame1, text='* 접수 일자').grid(row=0, column=0, padx=0, pady=0, sticky='W')
 
 # 접수 일자 입력 박스
 receipt_date = tk.StringVar()                               # 기입창에 표시할 문자열을 가져올 변수
-receipt_date_box = ttk.Entry(frame1, width=12, textvariable=receipt_date)
+receipt_date_box = ttk.Entry(frame1, width=20, textvariable=receipt_date)
 receipt_date_box.grid(row=0, column=1, padx=5, pady=5, columnspan=2, sticky='W')
 
 receipt_date_box.insert(INSERT, today)
-print(today)
+
+#-------------------------------------
+# 접수자
+ttk.Label(frame1, text='1. CS 접수자').grid(row=0, column=3,  padx=0, pady=0, sticky='W')
+
+# 접수자 입력 박스
+goodocmon = tk.StringVar()
+goodocmon_choose = ttk.Combobox(frame1, width=20, textvariable=goodocmon, state='readonly')
+goodocmon_choose['values'] = ('데이브', '스미스', '테오', '도로시', '르윈', '벨라', '폴', '스테파니')
+goodocmon_choose.grid(row=0, column=4, padx=5, pady=5, columnspan=1)
+goodocmon_choose.current()
+
 #-------------------------------------
 # 병원명
-ttk.Label(frame1, text='2. 병원명 입력').grid(row=0, column=2, padx=0, pady=0, sticky='W')
+ttk.Label(frame1, text='2. 병원명 입력').grid(row=1, column=0, padx=0, pady=0, sticky='W')
 
 # 병원명 입력 박스
 hospital_name = tk.StringVar()
-hospital_name_box = ttk.Entry(frame1, width=20, textvariable=hospital_name)
-hospital_name_box.grid(row=0, column=3, padx=5, pady=5, columnspan=2, sticky='W')
+hospital_name_box = ttk.Entry(frame1, width=14, textvariable=hospital_name)
+hospital_name_box.grid(row=1, column=1, padx=5, pady=5, columnspan=2, sticky='W')
 
 #-------------------------------------
 # 병원 검색 버튼
 search_button = tk.Button(frame1, width=4, text='검색!', command=click_me)
-search_button.grid(row=0, column=5, padx=5, pady=5, columnspan=1, sticky='W')
+search_button.grid(row=1, column=1, padx=5, pady=5, columnspan=3)
 search_button.bind('<Return>', press_enter)
 
 #-------------------------------------
 # 연동차트
-ttk.Label(frame1, text=' - 연동 차트').grid(row=2, column=0, padx=0, pady=0, sticky='W')
+ttk.Label(frame1, text=' * 연동 차트').grid(row=1, column=3, padx=0, pady=0, sticky='W')
 
 # 연동차트 입력 박스
 ocschart_name = tk.StringVar()
-ocschart_name_box = ttk.Combobox(frame1, width=10, textvariable=ocschart_name)
+ocschart_name_box = ttk.Combobox(frame1, width=20, textvariable=ocschart_name)
 ocschart_name_box['values'] \
 	= ('의사랑', '오케이차트', '이지스', '비연동', '스마트CRM', '아이프로', '아이차트', '한의사랑', '히포크라테스', '팬차트', '해당없음')
-ocschart_name_box.grid(row=2, column=1, padx=5, pady=5, columnspan=1)
+ocschart_name_box.grid(row=1, column=4, padx=5, pady=5, columnspan=1)
 ocschart_name_box.current()
 
 # 사용 버전
-ttk.Label(frame1, text=' - 사용 버전').grid(row=2, column=2, padx=0, pady=0, sticky='W')
+ttk.Label(frame1, text=' - 사용 버전').grid(row=2, column=0, padx=0, pady=0, sticky='W')
 
 # 사용 버전 표시 박스
 version_string = tk.StringVar()
 version_string_box = ttk.Entry(frame1, width=20, textvariable=version_string, state='normal', takefocus=False)
-version_string_box.grid(row=2, column=3, padx=5, pady=5, columnspan=2, sticky='W')
+version_string_box.grid(row=2, column=1, padx=5, pady=5, columnspan=2, sticky='W')
 
 # 요양기관번호
-ttk.Label(frame1, text=' - 요양기관번호').grid(row=3, column=0, padx=0, pady=0, sticky='W')
+ttk.Label(frame1, text=' - 요양기관번호').grid(row=2, column=3, padx=0, pady=0, sticky='W')
 
 # 요양기관번호 표시 박스
 unique_hospital_number = tk.StringVar()
-unique_hospital_number_box = ttk.Entry(frame1, width=12, textvariable=unique_hospital_number, state='normal', takefocus=False)
-unique_hospital_number_box.grid(row=3, column=1, padx=5, pady=5, columnspan=2, sticky='W')
+unique_hospital_number_box = ttk.Entry(frame1, width=22, textvariable=unique_hospital_number, state='normal', takefocus=False)
+unique_hospital_number_box.grid(row=2, column=4, padx=5, pady=5, columnspan=2, sticky='W')
 
 # 전화번호
-ttk.Label(frame1, text=' - 전화번호').grid(row=3, column=2, padx=0, pady=0, sticky='W')
+ttk.Label(frame1, text=' - 전화번호').grid(row=3, column=0, padx=0, pady=0, sticky='W')
 
 # 전화번호 표시 박스
 hospital_phone_number = tk.StringVar()
 hospital_phone_number_box = ttk.Entry(frame1, width=20, textvariable=hospital_phone_number, state='normal', takefocus=False)
-hospital_phone_number_box.grid(row=3, column=3, padx=5, pady=5, columnspan=2, sticky='W')
+hospital_phone_number_box.grid(row=3, column=1, padx=5, pady=5, columnspan=2, sticky='W')
 
 # 특이사항
-ttk.Label(frame1, text=' - 설치 시 특이사항').grid(row=4, column=0, padx=0, pady=0, sticky='W')
+ttk.Label(frame1, text=' - 설치 시 특이사항').grid(row=3, column=3, padx=0, pady=0, sticky='W')
 
 # 특이사항 표시 박스
 install_uniqueness = tk.StringVar()
-install_uniqueness_box = ttk.Entry(frame1, width=12, textvariable=install_uniqueness, state='normal', takefocus=False)
-install_uniqueness_box.grid(row=4, column=1, padx=5, pady=5, columnspan=2, sticky='W')
-
-# 도입 후 현황 시트 설치 상태 값
-ttk.Label(frame1, text=' - 설치 상태').grid(row=4, column=2, padx=0, pady=0, sticky='W')
-
-# 특이사항 표시 박스
-install_status = tk.StringVar()
-install_status_box = ttk.Entry(frame1, width=20, textvariable=install_status, state='normal', takefocus=False)
-install_status_box.grid(row=4, column=3, padx=5, pady=5, columnspan=2, sticky='W')
+install_uniqueness_box = ttk.Entry(frame1, width=22, textvariable=install_uniqueness, state='normal', takefocus=False)
+install_uniqueness_box.grid(row=3, column=4, padx=5, pady=5, columnspan=2, sticky='W')
 
 #-------------------------------------
 #-------------------------------------
 # 문의유형(대)
-#ttk.Label(frame1, text='3. 문의 유형(대)').grid(row=4, column=0, padx=0, pady=0, sticky='W')
+ttk.Label(frame1, text='3. 문의 유형(대)').grid(row=4, column=0, padx=0, pady=0, sticky='W')
 
 # 문의유형(대) 입력 박스
-#ask_type_1 = tk.StringVar()
-#ask_type_1_choose = ttk.Combobox(frame1, width=18, textvariable=ask_type_1, state='readonly')
-#ask_type_1_choose['values'] = ('사용중', '신청/기타', '설치시')
-#ask_type_1_choose.grid(row=4, column=1, padx=5, pady=5, columnspan=2, sticky='W')
-#ask_type_1_choose.current()
+ask_type_1 = tk.StringVar()
+ask_type_1_choose = ttk.Combobox(frame1, width=18, textvariable=ask_type_1, state='readonly')
+ask_type_1_choose['values'] = ('사용중', '신청/기타', '설치시')
+ask_type_1_choose.grid(row=4, column=1, padx=5, pady=5, columnspan=2, sticky='W')
+ask_type_1_choose.current()
 
 #-------------------------------------
 # 문의유형(중)
-#ttk.Label(frame1, text='4. 문의 유형(중)').grid(row=5, column=0, padx=0, pady=0, sticky='W')
+ttk.Label(frame1, text='4. 문의 유형(중)').grid(row=4, column=3, padx=0, pady=0, sticky='W')
 
 # 문의유형(중) 입력 박스
-#ask_type_2 = tk.StringVar()
-#ask_type_2_choose = ttk.Combobox(frame1, width=20, textvariable=ask_type_2, state='readonly')
-#ask_type_2_choose['values'] = \
-#	('접수프로그램사용 이슈', '거치대/충전 이슈', '태블릿 이슈', '알림톡 이슈', '차트 연동 이슈', 'USB통신 이슈',
-#	 '[요청] 기능개선요청', '[요청] 프로그램 추가설치', '백신프로그램 이슈', '개인정보 이슈',
-#	 '사용 미숙', '네트워크 불안정', '의사랑 보안 이슈', 'PC환경이슈',
-#	 '업그레이드 이슈', '철수', '복합', '기타')
-#ask_type_2_choose.grid(row=5, column=1, padx=5, pady=5, columnspan=1)
-#ask_type_2_choose.current()
+ask_type_2 = tk.StringVar()
+ask_type_2_choose = ttk.Combobox(frame1, width=20, textvariable=ask_type_2, state='readonly')
+ask_type_2_choose['values'] = \
+	('접수프로그램사용 이슈', '거치대/충전 이슈', '태블릿 이슈', '알림톡 이슈', '차트 연동 이슈', 'USB통신 이슈',
+	 '[요청] 기능개선요청', '[요청] 프로그램 추가설치', '백신프로그램 이슈', '개인정보 이슈',
+	 '사용 미숙', '네트워크 불안정', '의사랑 보안 이슈', 'PC환경이슈',
+	 '업그레이드 이슈', '철수', '복합', '기타')
+ask_type_2_choose.grid(row=4, column=4, padx=5, pady=5, columnspan=1)
+ask_type_2_choose.current()
 
 #-------------------------------------
 # 문의 내용
@@ -788,13 +674,15 @@ install_status_box.grid(row=4, column=3, padx=5, pady=5, columnspan=2, sticky='W
 
 # 문의 내용 입력 박스
 scroll_w1 = 67
-scroll_h1 = 7
+scroll_h1 = 10
 ask_contents = scrolledtext.ScrolledText(frame2, width=scroll_w1, height=scroll_h1, wrap=tk.CHAR)      # => wrap option=CHAR/WORD
 ask_contents.grid(row=0, column=0, columnspan=3, padx=5, pady=1, sticky='W')
 
 #-------------------------------------
 # 처리내용
 # 처리 내용 입력 박스
+scroll_w1 = 67
+scroll_h1 = 10
 success_contents = scrolledtext.ScrolledText(frame7, width=scroll_w1, height=scroll_h1, wrap=tk.CHAR)      # => wrap option=CHAR/WORD
 success_contents.grid(row=0, column=0, columnspan=3, padx=5, pady=1, sticky='W')
 
@@ -810,58 +698,6 @@ channel_list = ['오류처리', '설치이슈', '장비이슈', '철수/반품�
 for col2 in range(6):
 	channel_radio = tk.Radiobutton(frame3, text=channel_list[col2], variable=channel_state, value=col2)
 	channel_radio.grid(row=cs_channel_combo_row, column=col2)
-#-------------------------------------
-# 문의 유형 선택 콤보 박스
-
-ask_value_0 = tk.IntVar()
-ask_value_1 = tk.IntVar()
-ask_value_2 = tk.IntVar()
-ask_value_3 = tk.IntVar()
-ask_value_4 = tk.IntVar()
-ask_value_5 = tk.IntVar()
-ask_value_6 = tk.IntVar()
-ask_value_7 = tk.IntVar()
-ask_value_8 = tk.IntVar()
-ask_value_9 = tk.IntVar()
-ask_value_10 = tk.IntVar()
-ask_value_11 = tk.IntVar()
-ask_value_12 = tk.IntVar()
-ask_value_13 = tk.IntVar()
-ask_value_14 = tk.IntVar()
-ask_value_15 = tk.IntVar()
-ask_value_16 = tk.IntVar()
-ask_value_17 = tk.IntVar()
-ask_value_18 = tk.IntVar()
-ask_value_19 = tk.IntVar()
-ask_value_20 = tk.IntVar()
-ask_value_21 = tk.IntVar()
-ask_value_22 = tk.IntVar()
-
-ask_values = [ask_value_0, ask_value_1, ask_value_2, ask_value_3, ask_value_4, ask_value_5, ask_value_6,
-              ask_value_7, ask_value_8, ask_value_9, ask_value_10, ask_value_11, ask_value_12, ask_value_13,
-              ask_value_14, ask_value_15, ask_value_16, ask_value_17, ask_value_18, ask_value_19, ask_value_20, ask_value_21,
-              ask_value_22]
-
-ask_value_list = ['접수프로그램 오류', '네트워크 불안정', 'USB 통신', '차트 연동', '업데이트-의사랑', '업데이트-굿닥', '업데이트-윈도우/기타',
-                  '태블릿 이슈', '태블릿 파손', '거치대 이슈', '거치대 파손', '기타물품', '충전 이슈', '분실',
-                  '신청/설치 문의', '사용미숙', '백신프로그램 차단', '알림톡', '프로그램 추가설치', '개선요청', '개인정보 이슈', '그 외',
-				  '철수/반품 요청']
-
-for col3 in range(7):
-	ask_value_box = tk.Checkbutton(frame9_a, text=ask_value_list[col3], variable=ask_values[col3])
-	ask_value_box.grid(row=col3, column=0, sticky='W')
-
-for col3 in range(7,14):
-	ask_value_box = tk.Checkbutton(frame9_b, text=ask_value_list[col3], variable=ask_values[col3])
-	ask_value_box.grid(row=col3, column=0, sticky='W')
-
-for col3 in range(14,22):
-	ask_value_box = tk.Checkbutton(frame9_c, text=ask_value_list[col3], variable=ask_values[col3])
-	ask_value_box.grid(row=col3, column=0, sticky='W')
-
-for col3 in range(22,23):
-	ask_value_box = tk.Checkbutton(frame9_d, text=ask_value_list[col3], variable=ask_values[col3])
-	ask_value_box.grid(row=col3, column=0, sticky='W')
 
 #-------------------------------------
 # 처리 담당자 지정
@@ -871,8 +707,8 @@ for col3 in range(22,23):
 hero_combo_row = 0
 hero_combo_row_2 = 1
 
-#def _clickCombo():
-#	value_1.append()
+def _clickCombo():
+	value_1.append()
 
 hero_list = ['데이브', '스미스', '테오', '도로시', '르윈', '벨라', '폴', '스테파니']
 
@@ -924,10 +760,10 @@ cs_radio_3.deselect()
 #ttk.Label(win, text='* CS 등록하기').grid(row=10, column=0, sticky='W')
 
 # CS 등록하기 버튼
-action_1 = ttk.Button(frame6, text="등록!", command=click_me_2).grid(row=0, column=0, padx=5, pady=5)
+action_1 = ttk.Button(frame6, text="뀨우!", command=click_me_2).grid(row=0, column=0, padx=5, pady=5)
 
 #=====================================
 # 최초 실행 시 포커싱 위치 = CS 접수자
-hospital_name_box.focus()
+goodocmon_choose.focus()
 #=====================================
 win.mainloop()
