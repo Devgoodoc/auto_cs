@@ -85,7 +85,7 @@ frame9_b = tk.LabelFrame(frame9, text=' - 장비이슈')
 frame9_b.grid(row=0, column=1, padx=5, pady=5, sticky='N')
 
 frame9_c = tk.LabelFrame(frame9, text=' - 기타문의')
-frame9_c.grid(row=0, column=2, padx=5, pady=5)
+frame9_c.grid(row=0, column=2, padx=5, pady=5, sticky='N')
 
 frame9_d = tk.LabelFrame(frame9, text=' - 철수요청')
 frame9_d.grid(row=0, column=3, padx=5, pady=5, sticky='N')
@@ -312,6 +312,7 @@ def press_enter(event):                               # 엔터 키 입력 시, �
 	print('---')
 #------
 #======
+# 등록하기 버튼 카운터
 function_count = [0]
 
 def click_me_2():                                     # 등록 버튼 클릭 시
@@ -321,14 +322,13 @@ def click_me_2():                                     # 등록 버튼 클릭 시
 	# 토큰 리프레쉬
 	if credentials.access_token_expired:
 		gs.login()
-		print("restart")
-		#msg.showwarning("경고", "토큰이 만료되어 재로그인을 수행했습니다. \n 잠시만 기다려주세요.")
+		print("token expired")
+		msg.showwarning("경고", "토큰이 만료되어 재로그인을 수행했습니다. \n 잠시만 기다려주세요.")
 
 		f = open("log.txt", 'a')
 		f.write("토큰값 만료로 인하여 갱신하였습니다." + '\n')
 		f.write('---' + '\n')
 		f.close()
-		#return
 
 	if function_count[0] == 1:
 		print("이미 눌렀음")
@@ -382,7 +382,6 @@ slack_channel_code = ['CE130FQK0', 'CE1315D0E', 'CDZFP52G4', 'CE132QH0E', 'CDZSN
 value_1 = list()        # 처리담당자 선택 값을 담는 배열
 value_2 = list()        # 처리담당자 값을 담아 한글이름값을 담는 배열
 codes_1 = list()        # hero_code 값을 담는 배열
-
 value_3 = list()        # 문의 유형 선택 값을 담는 배열
 value_4 = list()        # 문의 유형 스트링 값을 담는 배열
 
@@ -471,6 +470,8 @@ def _enrollment():
 		goodocmon = goodocmon_list[6]
 	elif cs_goodocmon_state.get() == 8:
 		goodocmon = goodocmon_list[7]
+	elif cs_goodocmon_state.get() == 9:
+		goodocmon = goodocmon_list[8]
 
 	# 처리 담당자 선택 값 수집
 	for n in range(len(hero_list)):
@@ -487,7 +488,14 @@ def _enrollment():
 		if value_3[n2] == 1:
 			value_4.append(ask_value_list[n2])
 
-	print("value_4", value_4)
+	# 문의유형 & 처리자 값이 없을 경우 하이픈 부여
+	if value_2 == []:
+		print("value_2", value_2)
+		value_2.append("-")
+
+	if value_4 == []:
+		print("value_4", value_4)
+		value_4.append("-")
 
 	#-----------
 	# 채널 선택 값 수집
@@ -526,7 +534,7 @@ def _enrollment():
 	#-----------
 	# 스프레드 시트 행 데이터 셋팅
 	cs_data_list = [receipt_date_box.get(), day_of_korean, hospital_name_box.get(), unique_hospital_number_box.get(), hospital_phone_number_box.get(),
-	                ask_contents.get('1.0', END).strip(), goodocmon, ocschart_name_box.get(),'', ",\n".join(value_4), cs_result, "",
+	                ask_contents.get('1.0', END).strip(), goodocmon, ocschart_name_box.get(),"-", ",\n".join(value_4), cs_result, "-",
 	                success_contents.get('1.0',END).strip(), ",\n".join(value_2), row_count, channel_string,
 	                install_status_box.get()]
 
@@ -559,9 +567,6 @@ def _enrollment():
 	request_result = requests.post(channel_name, data=json.dumps(payload), headers={'Content-Type': 'application/json'})
 	print(request_result)
 
-	#if request_result.status_code != 200:
-	#	msg.showwarning('앗! 이런..', '슬랙 상태가 이상하네요.' )
-
 	# 등록한 슬랙 메세지에 핀 처리
 	if cs_state.get() == 1:
 		info = sc.api_call("channels.info", channel=channel_code)
@@ -569,23 +574,21 @@ def _enrollment():
 		pin = sc.api_call("pins.add", channel=channel_code, timestamp=msg_ts)
 		print(pin["ok"])
 
-	f = open("log.txt", 'a')
-	f.write('---' + '\n' + "cs등록 완료" + '\n' + '---' + '\n' + str(message_1) + '\n')
-	f.write('---' + '\n')
-	f.close()
+	with open("log.txt", 'a') as f:
+		f.write('---' + '\n' + "cs등록 완료" + '\n' + '---' + '\n' + str(message_1) + '\n')
+		f.write('---' + '\n')
+
 	#-----------
 	# 테스트용 슬랙 메세지
 
 	#test_slack_channel_url = 'https://hooks.slack.com/services/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'
 	#test_request_result = requests.post(test_slack_channel_url, data=json.dumps(payload), headers={'Content-Type': 'application/json'})
-
 	#print(test_request_result.status_code)
 
 	#if test_request_result.status_code != 200:
 	#	msg.showwarning('앗! 이런..', '슬랙 상태가 이상하네요.' )
 
 	# 테스트용 핀처리
-
 	#if cs_state.get() == 1:
 	#	info = sc.api_call("channels.info", channel='C8HPB458T')
 	#	msg_ts = info['channel']['latest']['ts']
@@ -641,7 +644,7 @@ def _enrollment():
 
 cs_goodocmon_combo_row = 0
 
-goodocmon_list = ['데이브', '스미스', '테오', '도로시', '르윈', '벨라', '폴', '스테파니']
+goodocmon_list = ['데이브', '스미스', '테오', '도로시', '르윈', '벨라', '폴', '스테파니', '그 외']
 
 cs_goodocmon_state = tk.IntVar()
 
@@ -677,6 +680,10 @@ cs_goodocmon_radio_8 = tk.Radiobutton(frame8, text=goodocmon_list[7], variable=c
 cs_goodocmon_radio_8.grid(row=cs_goodocmon_combo_row, column=7)
 cs_goodocmon_radio_8.deselect()
 
+cs_goodocmon_radio_9 = tk.Radiobutton(frame8, text=goodocmon_list[8], variable=cs_goodocmon_state, value=9)
+cs_goodocmon_radio_9.grid(row=cs_goodocmon_combo_row, column=8)
+cs_goodocmon_radio_9.deselect()
+
 #-------------------------------------
 # 접수 일자
 ttk.Label(frame1, text='* 접수 일자').grid(row=0, column=0, padx=0, pady=0, sticky='W')
@@ -687,7 +694,7 @@ receipt_date_box = ttk.Entry(frame1, width=12, textvariable=receipt_date)
 receipt_date_box.grid(row=0, column=1, padx=5, pady=5, columnspan=2, sticky='W')
 
 receipt_date_box.insert(INSERT, today)
-print(today)
+#print(today)
 #-------------------------------------
 # 병원명
 ttk.Label(frame1, text='2. 병원명 입력').grid(row=0, column=2, padx=0, pady=0, sticky='W')
@@ -842,20 +849,20 @@ ask_values = [ask_value_0, ask_value_1, ask_value_2, ask_value_3, ask_value_4, a
               ask_value_14, ask_value_15, ask_value_16, ask_value_17, ask_value_18, ask_value_19, ask_value_20, ask_value_21,
               ask_value_22]
 
-ask_value_list = ['접수프로그램 오류', '네트워크 불안정', 'USB 통신', '차트 연동', '업데이트-의사랑', '업데이트-굿닥', '업데이트-윈도우/기타',
+ask_value_list = ['접수프로그램 오류', '네트워크 불안정', 'USB 통신', '차트 연동', '백신프로그램 차단', '업데이트-의사랑', '업데이트-굿닥', '업데이트-윈도우/기타',
                   '태블릿 이슈', '태블릿 파손', '거치대 이슈', '거치대 파손', '기타물품', '충전 이슈', '분실',
-                  '신청/설치 문의', '사용미숙', '백신프로그램 차단', '알림톡', '프로그램 추가설치', '개선요청', '개인정보 이슈', '그 외',
+                  '신청/설치 문의', '사용미숙', '알림톡', '프로그램 추가설치', '개선요청', '개인정보 이슈', '그 외',
 				  '철수/반품 요청']
 
-for col3 in range(7):
+for col3 in range(8):
 	ask_value_box = tk.Checkbutton(frame9_a, text=ask_value_list[col3], variable=ask_values[col3])
 	ask_value_box.grid(row=col3, column=0, sticky='W')
 
-for col3 in range(7,14):
+for col3 in range(8,15):
 	ask_value_box = tk.Checkbutton(frame9_b, text=ask_value_list[col3], variable=ask_values[col3])
 	ask_value_box.grid(row=col3, column=0, sticky='W')
 
-for col3 in range(14,22):
+for col3 in range(15,22):
 	ask_value_box = tk.Checkbutton(frame9_c, text=ask_value_list[col3], variable=ask_values[col3])
 	ask_value_box.grid(row=col3, column=0, sticky='W')
 
