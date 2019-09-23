@@ -7,7 +7,7 @@ os.environ['TK_LIBRARY'] = r'C:\Users\Goodoc\AppData\Local\Programs\Python\Pytho
 build_exe_options = dict(
         packages = ["idna"],
         includes = ["sys", "os", "datetime", "tkinter", "slackclient", "gspread", "oauth2client", "urllib3", "json", "requests", "re", "threading", "logging"],
-        include_files = ["cred.json", "tcl86t.dll", "tk86t.dll", "token_info.txt"]
+        include_files = ["cred.json", "tcl86t.dll", "tk86t.dll", "token_info.txt", "webhook_url.txt","goodocmon_kr_info.txt", "goodocmon_name.txt", "goodocmon_code_info.txt"]
 )
 
 #base = None
